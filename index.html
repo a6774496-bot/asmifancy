@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asmi Fancy - Premium Store</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root { --primary: #131921; --accent: #febd69; --btn: #ffd814; --body-bg: #f4f7f9; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--body-bg); }
+
+        /* Navigation */
+        nav { 
+            background: var(--primary); 
+            padding: 0 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            height: 70px;
+        }
+        .logo { font-size: 24px; font-weight: bold; color: var(--accent); text-decoration: none; }
+
+        /* Search Bar Design */
+        .search-container {
+            flex: 0 1 400px; /* सर्च बारलाई बीचमा ठिक्क साइजमा राख्ने */
+            display: flex;
+            margin: 0 15px;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            font-size: 14px;
+        }
+        .search-btn {
+            background: var(--accent);
+            border: none;
+            padding: 0 15px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .user-menu { display: flex; align-items: center; gap: 15px; color: white; }
+        #user-display { font-size: 15px; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+        
+        .logout-btn { 
+            background: transparent; border: 1px solid var(--accent); color: var(--accent);
+            padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; 
+            display: none;
+        }
+
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        
+        #login-box { 
+            background: white; padding: 30px; border-radius: 12px; text-align: center; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05); max-width: 400px; margin: 0 auto 30px;
+        }
+
+        /* 3 Columns Grid */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); /* एकै लाइनमा ३ वटा */
+            gap: 25px; 
+        }
+
+        /* Responsive: मोबाइलमा १ र ट्याब्लेटमा २ वटा देखिने */
+        @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+
+        .card { 
+            background: white; border-radius: 12px; overflow: hidden; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #eee;
+            display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 250px; object-fit: cover; }
+        .card-info { padding: 15px; text-align: center; flex-grow: 1; }
+        .price { color: #B12704; font-size: 20px; font-weight: bold; margin: 10px 0; }
+        .add-btn { 
+            background: var(--btn); border: 1px solid #fcd200; padding: 10px; 
+            width: 100%; border-radius: 20px; cursor: pointer; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="logo">Asmi Fancy</a>
+
+    <div class="search-container">
+        <input type="text" id="productSearch" placeholder="सामान खोज्नुहोस्..." onkeyup="searchProducts()">
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+    </div>
+
+    <div class="user-menu">
+        <div id="user-display"><i class="fas fa-user-circle"></i> लगइन</div>
+        <button id="logout-btn" class="logout-btn" onclick="logoutUser()">Logout</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="login-box">
+        <h2 id="welcome-text">तपाईंको विवरण भर्नुहोस्</h2>
+        <div id="auth-form">
+            <input type="text" id="cust-name" style="width:90%; padding:10px; margin:5px;" placeholder="पूरा नाम">
+            <input type="number" id="cust-phone" style="width:90%; padding:10px; margin:5px;" placeholder="मोबाइल नम्बर">
+            <button class="add-btn" style="margin-top:10px;" onclick="loginUser()">सपिङ सुरु गर्नुहोस्</button>
+        </div>
+    </div>
+
+    <div class="grid" id="productGrid">
+        <div class="card">
+            <img src="premuim tshirt.JPG" alt="Tshirt">
+            <div class="card-info">
+                <h3>Premium Winter Tshirt</h3>
+                <div class="price">रु १,५४९</div>
+                <button class="add-btn" onclick="placeOrder('Premium Tshirt', 1549)">अर्डर गर्नुहोस्</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=500" alt="Jeans">
+            <div class="card-info">
+                <h3>Denim Slim Jeans</h3>
+                <div class="price">रु १,४९९</div>
+                <button class="add-btn" onclick="placeOrder('Denim Jeans', 1499)">अर्डर गर्नुहोस्</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="shoe.jpg" alt="shoe">
+            <div class="card-info">
+                <h3>Premium White Shoe</h3>
+                <div class="price">रु १,०००</div>
+                <button class="add-btn" onclick="placeOrder('Premium White Shoe', 1000)">अर्डर गर्नुहोस्</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="martin.jpg" alt="jockers">
+            <div class="card-info">
+                <h3>Premium Winter Jockers</h3>
+                <div class="price">रु १,२४९</div>
+                <button class="add-btn" onclick="placeOrder('Winter Jockers', 1249)">अर्डर गर्नुहोस्</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="olo.jpg" alt="Tshirt">
+            <div class="card-info">
+                <h3>Premium Winter Thsirt</h3>
+                <div class="price">रु १,५४९</div>
+                <button class="add-btn" onclick="placeOrder('Premium olo thsirt', 1549)">अर्डर गर्नुहोस्</button>
+            </div>
+        </div>
+         <div class="card">
+            <img src="hoddiewhite.jpg" alt="Hoodie">
+            <div class="card-info">
+                <h3>Premium Winter Hoodie</h3>
+                <div class="price">रु १,५४९</div>
+                <button class="add-btn" onclick="placeOrder('Premium Hoodie', 1549)">अर्डर गर्नुहोस्</button>
+            </div>
+    </div>
+     <div class="card">
+            <img src="jockerblack.JPG" alt="jockerblack">
+            <div class="card-info">
+                <h3>Premium Winter jockerblack</h3>
+                <div class="price">रु 1400</div>
+                <button class="add-btn" onclick="placeOrder('Premium jockerblack', 1400)">अर्डर गर्नुहोस्</button>
+            </div>
+</div>
+ <div class="card">
+            <img src="creamthshirt.JPG" alt="thsirt">
+            <div class="card-info">
+                <h3>Premium Winter Fancy Thsirt</h3>
+                <div class="price">रु 1500</div>
+                <button class="add-btn" onclick="placeOrder('Premium thsirt', 1500)">अर्डर गर्नुहोस्</button>
+            </div>
+            </div>
+             <div class="card">
+            <img src="hoodieblack.JPG" alt="Hoodie">
+            <div class="card-info">
+                <h3>Premium Winter Hoodie</h3>
+                <div class="price">रु 1700</div>
+                <button class="add-btn" onclick="placeOrder('Premium Hoodie', 1700)">अर्डर गर्नुहोस्</button>
+            </div>
+             </div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDz5IWfIFsiNpYR0Ba8csukgicHqxTpif0",
+        authDomain: "asmifancy-e33a1.firebaseapp.com",
+        projectId: "asmifancy-e33a1",
+        storageBucket: "asmifancy-e33a1.firebasestorage.app",
+        messagingSenderId: "196699296698",
+        appId: "1:196699296698:web:bf0e91baaefd5ebf86c383"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let currentUser = JSON.parse(localStorage.getItem('asmi_user'));
+
+    window.onload = () => { if(currentUser) showLoggedInUI(); };
+
+    function loginUser() {
+        const name = document.getElementById('cust-name').value;
+        const phone = document.getElementById('cust-phone').value;
+        if(name && phone.length >= 10) {
+            currentUser = { name, phone };
+            localStorage.setItem('asmi_user', JSON.stringify(currentUser));
+            showLoggedInUI();
+        } else { alert("विवरण भर्नुहोस्!"); }
+    }
+
+    function showLoggedInUI() {
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('user-display').innerHTML = `<i class="fas fa-user-circle"></i> Hi, ${currentUser.name}`;
+        document.getElementById('logout-btn').style.display = 'inline-block';
+    }
+
+    function logoutUser() {
+        localStorage.removeItem('asmi_user');
+        location.reload();
+    }
+
+    // Search Functionality
+    function searchProducts() {
+        let input = document.getElementById('productSearch').value.toLowerCase();
+        let cards = document.getElementsByClassName('card');
+        
+        for (let i = 0; i < cards.length; i++) {
+            let title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+            if (title.includes(input)) {
+                cards[i].style.display = "";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+
+    async function placeOrder(pName, price) {
+        if(!currentUser) { alert("पहिले लगइन गर्नुहोस्!"); return; }
+        const orderData = {
+            customerName: currentUser.name,
+            customerPhone: currentUser.phone,
+            product: pName,
+            amount: price,
+            status: "Pending",
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        try {
+            await db.collection("orders").add(orderData);
+            let msg = `*Asmi Fancy Order*%0Aनाम: ${currentUser.name}%0Aसामान: ${pName}%0Aमूल्य: रु ${price}`;
+            window.open(`https://wa.me/9779848488830?text=${msg}`, '_blank');
+        } catch(e) { alert("Error!"); }
+    }
+</script>
+
+</body>
+</html>

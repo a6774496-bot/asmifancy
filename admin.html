@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <title>Asmi Fancy - Admin Panel</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f0f2f5; }
+        .order-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid #e47911; display: flex; justify-content: space-between; align-items: center; }
+        .status-btn { background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .delete-btn { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-left: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>Asmi Fancy - Admin Dashboard</h1>
+    <div id="orders-list">अर्डरहरू लोड हुँदैछन्...</div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDz5IWfIFsiNpYR0Ba8csukgicHqxTpif0",
+            authDomain: "asmifancy-e33a1.firebaseapp.com",
+            projectId: "asmifancy-e33a1",
+            storageBucket: "asmifancy-e33a1.firebasestorage.app",
+            messagingSenderId: "196699296698",
+            appId: "1:196699296698:web:bf0e91baaefd5ebf86c383"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // रियल-टाइम अर्डरहरू तान्ने
+        db.collection("orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            const list = document.getElementById('orders-list');
+            list.innerHTML = "";
+            snapshot.forEach(doc => {
+                const order = doc.data();
+                list.innerHTML += `
+                    <div class="order-card">
+                        <div>
+                            <strong>फोन: ${order.customerPhone}</strong><br>
+                            सामान: ${order.product} | मूल्य: रु ${order.amount}<br>
+                            <small>समय: ${order.timestamp ? order.timestamp.toDate().toLocaleString() : 'भर्खरै'}</small>
+                        </div>
+                        <div>
+                            <button class="status-btn" onclick="updateStatus('${doc.id}')">${order.status || 'Pending'}</button>
+                            <button class="delete-btn" onclick="deleteOrder('${doc.id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        function deleteOrder(id) {
+            if(confirm("के तपाईं यो अर्डर हटाउन चाहनुहुन्छ?")) {
+                db.collection("orders").doc(id).delete();
+            }
+        }
+    </script>
+</body>
+</html>
