@@ -5,20 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asmi Fancy - Quality Clothing & Fashion Store</title>
 
-<meta name="description" content="Asmi Fancy मा स्वागत छ! यहाँ तपाईंले सुलभ मूल्यमा राम्रा र आधुनिक लुगाहरू पाउन सक्नुहुन्छ।">
+    <meta name="description" content="Asmi Fancy मा स्वागत छ! यहाँ तपाईंले सुलभ मूल्यमा राम्रा र आधुनिक लुगाहरू पाउन सक्नुहुन्छ।">
+    <meta name="keywords" content="Asmi Fancy, Fancy Store Nepal, Clothing store, Fashion shop, Online Shopping Nepal">
+    <meta property="og:title" content="Asmi Fancy - Premium Collection">
+    <meta property="og:description" content="हाम्रो नयाँ कलेक्सन हेर्नुहोस् र अनलाइन अर्डर गर्नुहोस्।">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1542272604-787c3835535d?w=500">
 
-<meta name="keywords" content="Asmi Fancy, Fancy Store Nepal, Clothing store, Fashion shop, Online Shopping Nepal">
-
-<meta property="og:title" content="Asmi Fancy - Premium Collection">
-<meta property="og:description" content="हाम्रो नयाँ कलेक्सन हेर्नुहोस् र अनलाइन अर्डर गर्नुहोस्।">
-<meta property="og:image" content="तपाईंको_लोगोको_लिङ्क_यहाँ">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        :root { --primary: #131921; --accent: #febd69; --btn: #ffd814; --body-bg: #f4f7f9; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--body-bg); }
+        :root { --primary: #131921; --accent: #febd69; --btn: #ffd814; --body-bg: #f4f7f9; --whatsapp: #25D366; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--body-bg); padding-bottom: 50px; }
 
         /* Navigation */
         nav { 
@@ -35,9 +34,8 @@
         }
         .logo { font-size: 24px; font-weight: bold; color: var(--accent); text-decoration: none; }
 
-        /* Search Bar Design */
         .search-container {
-            flex: 0 1 400px; /* सर्च बारलाई बीचमा ठिक्क साइजमा राख्ने */
+            flex: 0 1 400px;
             display: flex;
             margin: 0 15px;
         }
@@ -47,7 +45,6 @@
             border: none;
             border-radius: 5px 0 0 5px;
             outline: none;
-            font-size: 14px;
         }
         .search-btn {
             background: var(--accent);
@@ -55,16 +52,13 @@
             padding: 0 15px;
             border-radius: 0 5px 5px 0;
             cursor: pointer;
-            color: var(--primary);
         }
 
         .user-menu { display: flex; align-items: center; gap: 15px; color: white; }
-        #user-display { font-size: 15px; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
         
         .logout-btn { 
             background: transparent; border: 1px solid var(--accent); color: var(--accent);
-            padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; 
-            display: none;
+            padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; display: none;
         }
 
         .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
@@ -74,16 +68,12 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.05); max-width: 400px; margin: 0 auto 30px;
         }
 
-        /* 3 Columns Grid */
+        /* Grid */
         .grid { 
             display: grid; 
-            grid-template-columns: repeat(3, 1fr); /* एकै लाइनमा ३ वटा */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
             gap: 25px; 
         }
-
-        /* Responsive: मोबाइलमा १ र ट्याब्लेटमा २ वटा देखिने */
-        @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
 
         .card { 
             background: white; border-radius: 12px; overflow: hidden; 
@@ -91,12 +81,22 @@
             display: flex; flex-direction: column;
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 250px; object-fit: cover; }
+        .card img { width: 100%; height: 280px; object-fit: cover; background: #eee; }
         .card-info { padding: 15px; text-align: center; flex-grow: 1; }
-        .price { color: #B12704; font-size: 20px; font-weight: bold; margin: 10px 0; }
+        .price { color: #B12704; font-size: 22px; font-weight: bold; margin: 10px 0; }
+        
         .add-btn { 
-            background: var(--btn); border: 1px solid #fcd200; padding: 10px; 
-            width: 100%; border-radius: 20px; cursor: pointer; font-weight: bold;
+            background: var(--btn); border: 1px solid #fcd200; padding: 12px; 
+            width: 100%; border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        .add-btn:hover { background: #f7ca00; }
+
+        /* Floating WhatsApp Button */
+        .float-wa {
+            position: fixed; width: 60px; height: 60px; bottom: 20px; right: 20px;
+            background-color: var(--whatsapp); color: #FFF; border-radius: 50px;
+            text-align: center; font-size: 30px; box-shadow: 2px 2px 3px #999; z-index: 100;
+            display: flex; align-items: center; justify-content: center; text-decoration: none;
         }
     </style>
 </head>
@@ -104,31 +104,31 @@
 
 <nav>
     <a href="#" class="logo">Asmi Fancy</a>
-
     <div class="search-container">
         <input type="text" id="productSearch" placeholder="सामान खोज्नुहोस्..." onkeyup="searchProducts()">
         <button class="search-btn"><i class="fas fa-search"></i></button>
     </div>
-
     <div class="user-menu">
         <div id="user-display"><i class="fas fa-user-circle"></i> लगइन</div>
         <button id="logout-btn" class="logout-btn" onclick="logoutUser()">Logout</button>
     </div>
 </nav>
 
+<a href="https://wa.me/9779848488830" class="float-wa" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
 <div class="container">
     <div id="login-box">
         <h2 id="welcome-text">तपाईंको विवरण भर्नुहोस्</h2>
         <div id="auth-form">
-            <input type="text" id="cust-name" style="width:90%; padding:10px; margin:5px;" placeholder="पूरा नाम">
-            <input type="number" id="cust-phone" style="width:90%; padding:10px; margin:5px;" placeholder="मोबाइल नम्बर">
+            <input type="text" id="cust-name" style="width:90%; padding:12px; margin:5px; border-radius:5px; border:1px solid #ccc;" placeholder="पूरा नाम">
+            <input type="number" id="cust-phone" style="width:90%; padding:12px; margin:5px; border-radius:5px; border:1px solid #ccc;" placeholder="मोबाइल नम्बर">
             <button class="add-btn" style="margin-top:10px;" onclick="loginUser()">सपिङ सुरु गर्नुहोस्</button>
         </div>
     </div>
 
     <div class="grid" id="productGrid">
-       
-
         <div class="card">
             <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=500" alt="Jeans">
             <div class="card-info">
@@ -156,48 +156,11 @@
             </div>
         </div>
 
-        <div class="card">
-            <img src="olo.jpg" alt="Tshirt">
-            <div class="card-info">
-                <h3>Premium Winter Thsirt</h3>
-                <div class="price">रु १,५४९</div>
-                <button class="add-btn" onclick="placeOrder('Premium olo thsirt', 1549)">अर्डर गर्नुहोस्</button>
-            </div>
         </div>
-         <div class="card">
-            <img src="hoddiewhite.jpg" alt="Hoodie">
-            <div class="card-info">
-                <h3>Premium Winter Hoodie</h3>
-                <div class="price">रु १,५४९</div>
-                <button class="add-btn" onclick="placeOrder('Premium Hoodie', 1549)">अर्डर गर्नुहोस्</button>
-            </div>
-    </div>
-     <div class="card">
-            <img src="jockerblack.JPG" alt="jockerblack">
-            <div class="card-info">
-                <h3>Premium Winter jockerblack</h3>
-                <div class="price">रु 1400</div>
-                <button class="add-btn" onclick="placeOrder('Premium jockerblack', 1400)">अर्डर गर्नुहोस्</button>
-            </div>
 </div>
- <div class="card">
-            <img src="creamthshirt.JPG" alt="thsirt">
-            <div class="card-info">
-                <h3>Premium Winter Fancy Thsirt</h3>
-                <div class="price">रु 1500</div>
-                <button class="add-btn" onclick="placeOrder('Premium thsirt', 1500)">अर्डर गर्नुहोस्</button>
-            </div>
-            </div>
-             <div class="card">
-            <img src="hoodieblack.JPG" alt="Hoodie">
-            <div class="card-info">
-                <h3>Premium Winter Hoodie</h3>
-                <div class="price">रु 1700</div>
-                <button class="add-btn" onclick="placeOrder('Premium Hoodie', 1700)">अर्डर गर्नुहोस्</button>
-            </div>
-             </div>
 
 <script>
+    // Firebase Setup
     const firebaseConfig = {
         apiKey: "AIzaSyDz5IWfIFsiNpYR0Ba8csukgicHqxTpif0",
         authDomain: "asmifancy-e33a1.firebaseapp.com",
@@ -211,7 +174,6 @@
     const db = firebase.firestore();
 
     let currentUser = JSON.parse(localStorage.getItem('asmi_user'));
-
     window.onload = () => { if(currentUser) showLoggedInUI(); };
 
     function loginUser() {
@@ -221,12 +183,12 @@
             currentUser = { name, phone };
             localStorage.setItem('asmi_user', JSON.stringify(currentUser));
             showLoggedInUI();
-        } else { alert("विवरण भर्नुहोस्!"); }
+        } else { alert("कृपया आफ्नो नाम र १० अंकको नम्बर भर्नुहोस्!"); }
     }
 
     function showLoggedInUI() {
         document.getElementById('login-box').style.display = 'none';
-        document.getElementById('user-display').innerHTML = `<i class="fas fa-user-circle"></i> Hi, ${currentUser.name}`;
+        document.getElementById('user-display').innerHTML = `<i class="fas fa-user-circle"></i> नमस्ते, ${currentUser.name}`;
         document.getElementById('logout-btn').style.display = 'inline-block';
     }
 
@@ -235,23 +197,22 @@
         location.reload();
     }
 
-    // Search Functionality
     function searchProducts() {
         let input = document.getElementById('productSearch').value.toLowerCase();
         let cards = document.getElementsByClassName('card');
-        
         for (let i = 0; i < cards.length; i++) {
             let title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
-            if (title.includes(input)) {
-                cards[i].style.display = "";
-            } else {
-                cards[i].style.display = "none";
-            }
+            cards[i].style.display = title.includes(input) ? "" : "none";
         }
     }
 
     async function placeOrder(pName, price) {
-        if(!currentUser) { alert("पहिले लगइन गर्नुहोस्!"); return; }
+        if(!currentUser) { 
+            alert("अर्डर गर्नको लागि पहिले लगइन गर्नुहोस्!"); 
+            window.scrollTo(0,0);
+            return; 
+        }
+
         const orderData = {
             customerName: currentUser.name,
             customerPhone: currentUser.phone,
@@ -260,16 +221,17 @@
             status: "Pending",
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         };
+
         try {
             await db.collection("orders").add(orderData);
-            let msg = `*Asmi Fancy Order*%0Aनाम: ${currentUser.name}%0Aसामान: ${pName}%0Aमूल्य: रु ${price}`;
+            // WhatsApp message formatting
+            let msg = `*नयाँ अर्डर - Asmi Fancy*%0A--------------------------%0A*ग्राहकको नाम:* ${currentUser.name}%0A*फोन नम्बर:* ${currentUser.phone}%0A*सामान:* ${pName}%0A*मूल्य:* रु ${price}%0A--------------------------%0Aकृपया मेरो अर्डर कन्फर्म गरिदिनुहोला।`;
             window.open(`https://wa.me/9779848488830?text=${msg}`, '_blank');
-        } catch(e) { alert("Error!"); }
+        } catch(e) { 
+            alert("माफ गर्नुहोला, अर्डर सफल भएन। फेरि प्रयास गर्नुहोस्।"); 
+        }
     }
 </script>
 
 </body>
-
 </html>
-
-
